@@ -41,16 +41,12 @@ PRINT N'//--- Wrzucone wiadomosci do em_Archive bez UIDL ----//'
 
 
 
---- Usuwamy wiadomosci bez UIDL lub z przedzialem
---- Prawdopodbnie te wiadomosci co nie mialy UDIL zostana pobrane, w takiej ilosci jaka jest na serwerze
-
+--- Usuwamy wiadomosci
 PRINT N'--- kasowanie z em_Source  ----'
 DELETE em_Source FROM em_Source
   INNER JOIN #Temp ON em_Source.es_EmailId = #temp.es_EmailId
 WHERE
   #Temp.em_Date < @date
-  AND
-  #Temp.em_UIDL <> '';
 PRINT N'//--- kasowanie z em_Source  ----//'
 
 
@@ -59,8 +55,6 @@ DELETE em_Attachment FROM em_Attachment
   INNER JOIN #Temp ON em_Attachment.et_EmailId = #temp.es_EmailId
 WHERE
   #Temp.em_Date < @date
-  AND
-  #Temp.em_UIDL <> '';
 PRINT N'//--- kasowanie z em_Attachment  ----//'
 
 
@@ -68,42 +62,8 @@ PRINT N'--- kasowanie z em__Email  ----'
 DELETE em__Email FROM em__Email
 WHERE
   em__Email.em_Date < @date
-  AND
-  em__Email.em_UIDL <> '';
 
 PRINT N'//--- kasowanie z em__Email  ----//'
-
-PRINT N'KASOWANIE WIADOMOSCI BEZ UIDL, EXPERYMENTALEN to będą raczej wysłane wiadomości z poziomu sello'
-
-PRINT N'--- kasowanie z em_Source  ----'
-DELETE em_Source FROM em_Source
-  INNER JOIN #Temp ON em_Source.es_EmailId = #temp.es_EmailId
-WHERE
-  #Temp.em_Date < @date
-  AND
-  #Temp.em_UIDL = '';
-PRINT N'//--- kasowanie z em_Source  ----//'
-
-
-PRINT N'--- kasowanie z em_Attachment  ----'
-DELETE em_Attachment FROM em_Attachment
-  INNER JOIN #Temp ON em_Attachment.et_EmailId = #temp.es_EmailId
-WHERE
-  #Temp.em_Date < @date
-  AND
-  #Temp.em_UIDL = '';
-PRINT N'//--- kasowanie z em_Attachment  ----//'
-
-
-PRINT N'--- kasowanie z em__Email  ----'
-DELETE em__Email FROM em__Email
-WHERE
-  em__Email.em_Date < @date
-  AND
-  em__Email.em_UIDL = '';
-
-PRINT N'//--- kasowanie z em__Email  ----//'
-
 
 DROP TABLE #Temp
 
