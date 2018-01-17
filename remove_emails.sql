@@ -5,8 +5,8 @@ EKSPERYMENTALNIE, ALE RACZEJ SMIGA.
 
 DECLARE @date VARCHAR(60)
 --- Data do ktorej kasowane sa maile w sello
-
 SET @date = '2017-07-20'
+
 
 CREATE TABLE #Temp
 (
@@ -15,8 +15,6 @@ CREATE TABLE #Temp
   em_Date    DATETIME,
 )
 
--- Czyszczenie tabeli em_Archiwe, dla zachowania poprawnosci danych
-TRUNCATE TABLE em_Archive;
 
 PRINT N'--- Wrzucone wiadomosci do #Temp ----'
 --- Wrzocamy do tempa wszystkie wiadomosci z datami
@@ -29,7 +27,8 @@ INSERT INTO #Temp
 PRINT N'//--- Wrzucone wiadomosci do #Temp ----//'
 
 
---- Do em_Archiwe wrzucamy tylko te wiadomosci ktore nie maja pustego em_UIDL puste em_UIDL może oznacza wysłane
+--- Do em_Archiwe wrzucamy tylko te wiadomosci ktore nie maja pustego em_UIDL
+--- puste em_UIDL może oznacza wysłane
 PRINT N'--- Wrzucone wiadomosci do em_Archive bez UIDL ----'
 INSERT INTO em_Archive
   SELECT
@@ -37,6 +36,7 @@ INSERT INTO em_Archive
     1004
   FROM #Temp
   WHERE em_UIDL <> ''
+        AND #Temp.em_Date < @date
 PRINT N'//--- Wrzucone wiadomosci do em_Archive bez UIDL ----//'
 
 
@@ -57,7 +57,6 @@ WHERE
   #Temp.em_Date < @date
 PRINT N'//--- kasowanie z em_Attachment  ----//'
 
-
 PRINT N'--- kasowanie z em__Email  ----'
 DELETE em__Email FROM em__Email
 WHERE
@@ -66,4 +65,3 @@ WHERE
 PRINT N'//--- kasowanie z em__Email  ----//'
 
 DROP TABLE #Temp
-
